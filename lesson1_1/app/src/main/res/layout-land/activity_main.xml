@@ -7,45 +7,59 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button_toast"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/button_label_toast"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="showToast" />
-
-    <Button
         android:id="@+id/button_count"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="105dp"
+        android:onClick="countUp"
         android:text="@string/button_label_count"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/show_count"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="countUp" />
+        app:layout_constraintTop_toBottomOf="@+id/button_zero" />
+
+    <Button
+        android:id="@+id/button_zero"
+        android:layout_width="0dp"
+        android:layout_height="105dp"
+        android:onClick="setZero"
+        android:text="@string/button_label_zero"
+        android:textColor="@android:color/white"
+        app:backgroundTint="@android:color/darker_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_toast" />
+
+    <Button
+        android:id="@+id/button_toast"
+        android:layout_width="0dp"
+        android:layout_height="105dp"
+        android:layout_marginTop="16dp"
+        android:onClick="showToast"
+        android:orientation="vertical"
+        android:text="@string/button_label_toast"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/show_count"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/show_count"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:background="#FFFF00"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:text="@string/count_initial_value"
         android:textAlignment="center"
         android:textColor="@color/design_default_color_primary"
-        android:textSize="120sp"
+        android:textSize="160sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/button_count"
+        app:layout_constraintBottom_toBottomOf="@+id/button_count"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_toast"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/button_zero"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+    <!--        android:layout_marginRight= "@+id/button_toast"-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
