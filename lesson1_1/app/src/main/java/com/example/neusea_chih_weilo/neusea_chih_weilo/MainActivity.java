@@ -1,17 +1,19 @@
 package com.example.neusea_chih_weilo.neusea_chih_weilo;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private int mCount = 0;
     private TextView mShowCount;
+    public static final String EXTRA_MESSAGE =
+            "com.example.neusea_chih_weilo.neusea_chih_weilo.extra.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +23,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showToast(View view) {
-        Toast toast = Toast.makeText(this, R.string.toast_message,
-                Toast.LENGTH_SHORT);
-        toast.show();
+//        Toast toast = Toast.makeText(this, R.string.toast_message, Toast.LENGTH_SHORT);
+//        toast.show();
+        Intent intent = new Intent(this, Activity_second.class);
+        intent.putExtra(EXTRA_MESSAGE, String.valueOf(mCount));
+        startActivity(intent);
     }
 
     public void countUp(View view) {
