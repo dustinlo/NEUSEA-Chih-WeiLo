@@ -12,14 +12,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a9bc5c82-20ae-47ba-9de6-27fd8cb5736a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lesson2_1/app/src/main/java/com/example/neusea_chih_weilo/neusea_chih_weilo/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lesson2_1/app/src/main/java/com/example/neusea_chih_weilo/neusea_chih_weilo/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lesson2_1/app/src/main/java/com/example/neusea_chih_weilo/neusea_chih_weilo/SecondActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../lesson2_1/app/src/main/java/com/example/neusea_chih_weilo/neusea_chih_weilo/SecondActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/Dustinlo/.android/avd/Nexus_7_API_28.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/Dustinlo/.android/avd/Pixel_2_XL_API_28.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
