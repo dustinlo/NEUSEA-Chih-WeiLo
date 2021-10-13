@@ -1,0 +1,42 @@
+edu/neu/khoury/madsea/chihweilo/databinding/ActivityMainBinding.java
+ edu.neu.khoury.madsea.chihweilo.databinding.ActivityMainBinding
+edu/neu/khoury/madsea/chihweilo/data/ToDoDao.java
+ edu.neu.khoury.madsea.chihweilo.data.ToDoDao
+edu/neu/khoury/madsea/chihweilo/data/ToDoRoomDatabase.java
+ edu.neu.khoury.madsea.chihweilo.data.ToDoRoomDatabase
+edu/neu/khoury/madsea/chihweilo/viewmodel/ToDoViewModel.java
+ edu.neu.khoury.madsea.chihweilo.viewmodel.ToDoViewModel
+edu/neu/khoury/madsea/chihweilo/DataBindingTriggerClass.java
+ edu.neu.khoury.madsea.chihweilo.DataBindingTriggerClass
+edu/neu/khoury/madsea/chihweilo/data/ToDoItem.java
+ edu.neu.khoury.madsea.chihweilo.data.ToDoItem
+edu/neu/khoury/madsea/chihweilo/data/TaskDetails.java
+ edu.neu.khoury.madsea.chihweilo.data.TaskDetails
+edu/neu/khoury/madsea/chihweilo/BuildConfig.java
+ edu.neu.khoury.madsea.chihweilo.BuildConfig
+edu/neu/khoury/madsea/chihweilo/databinding/TodoItemBinding.java
+ edu.neu.khoury.madsea.chihweilo.databinding.TodoItemBinding
+edu/neu/khoury/madsea/chihweilo/data/ToDoDbDataSource.java
+ edu.neu.khoury.madsea.chihweilo.data.ToDoDbDataSource
+edu/neu/khoury/madsea/chihweilo/data/ToDoItemRepository.java
+ edu.neu.khoury.madsea.chihweilo.data.ToDoItemRepository
+edu/neu/khoury/madsea/chihweilo/data/IToDoDataSource.java
+ edu.neu.khoury.madsea.chihweilo.data.IToDoDataSource
+edu/neu/khoury/madsea/chihweilo/databinding/ActivityToDoBinding.java
+ edu.neu.khoury.madsea.chihweilo.databinding.ActivityToDoBinding
+edu/neu/khoury/madsea/chihweilo/RecyclerViewAdapter.java
+ edu.neu.khoury.madsea.chihweilo.RecyclerViewAdapter
+ edu.neu.khoury.madsea.chihweilo.RecyclerViewAdapter$1
+ edu.neu.khoury.madsea.chihweilo.RecyclerViewAdapter$2
+ edu.neu.khoury.madsea.chihweilo.RecyclerViewAdapter$OnItemClickListener
+ edu.neu.khoury.madsea.chihweilo.RecyclerViewAdapter$RecyclerViewHolder
+edu/neu/khoury/madsea/chihweilo/ToDoActivity.java
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity$1
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity$2
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity$3
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity$4
+ edu.neu.khoury.madsea.chihweilo.ToDoActivity$5
+edu/neu/khoury/madsea/chihweilo/MainActivity.java
+ edu.neu.khoury.madsea.chihweilo.MainActivity
+ edu.neu.khoury.madsea.chihweilo.MainActivity$1

@@ -1,29 +1,31 @@
 package edu.neu.khoury.madsea.chihweilo;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import edu.neu.khoury.madsea.chihweilo.data.ToDoItem;
+import edu.neu.khoury.madsea.chihweilo.viewmodel.ToDoViewModel;
 
-    public static final int CREATE_REQUEST = 1;
-    public static final int UPDATE_REQUEST = 2;
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
+
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private TaskDataSource instance;
+    private ToDoViewModel viewModel;
 
-    private ArrayList<TaskDetails> mTodoList;
+    private ArrayList<ToDoItem> mTodoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,37 +34,30 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("My Tasks");
 
-        createTodoList();
+        buildViewModel();
         buildRecyclerView();
-
+//        viewModel.getAllToDoList();
     }
 
-    private void createTodoList() {
-        instance = TaskDataSource.getInstance();
-        mTodoList = (ArrayList<TaskDetails>) instance.getTasks();
-    }
+    private void buildViewModel(){
+        viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
 
+        viewModel.getListOfToDos().observe(this, todos-> {
+            mAdapter.setToDoList(todos);
+        });
+    }
     private void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new RecyclerViewAdapter(mTodoList);
+        mAdapter = new RecyclerViewAdapter(this, this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Context context = mRecyclerView.getContext();
-                Intent intent = new Intent(context, Task.class);
-                intent.putExtra("index", position);
-                startActivityForResult(intent, UPDATE_REQUEST);
-            }
-        });
     }
 
     public void createTask(View view) {
-        Intent intent =new Intent(this, Task.class);
-        startActivityForResult(intent, CREATE_REQUEST);
+        Intent intent =new Intent(this, ToDoActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -77,14 +72,26 @@ public class MainActivity extends AppCompatActivity {
             mAdapter.notifyDataSetChanged();
         }
     }
-    
+
+    @Override
+    public void editToDo(int position) {
+        Context context = mRecyclerView.getContext();
+        Intent intent = new Intent(context, ToDoActivity.class);
+        intent.putExtra("index", position);
+        startActivity(intent);
+    }
+
+    @Override
+    public void checkToDo(ToDoItem todo, boolean isChecked) {
+        todo.setChecked(isChecked);
+        viewModel.editToDo(todo);
+    }
+
+
+    // helper
     public void showToastSuccess(){
         Toast toast = Toast.makeText(this, R.string.entry_added,
                                           Toast.LENGTH_SHORT);
         toast.show();
     }
-    
-    
-
-
 }

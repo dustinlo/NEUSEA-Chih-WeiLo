@@ -1,5 +1,6 @@
 package edu.neu.khoury.madsea.chihweilo;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import edu.neu.khoury.madsea.chihweilo.data.ToDoItem;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
+    private Context context;
     private OnItemClickListener mListener;
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mListener = listener;
-    }
-
-
-
-    private ArrayList<TaskDetails> mTodoList;
     private SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    private List<ToDoItem> toDoItemList;
+
+    public RecyclerViewAdapter(Context context, OnItemClickListener listener) {
+        this.context = context;
+        this.mListener = listener;
+    }
+
+    public void setToDoList(List<ToDoItem> todolist) {
+        this.toDoItemList = todolist;
+        notifyDataSetChanged();
+    }
+
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
         public CheckBox mChecked;
@@ -42,35 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mChecked = itemView.findViewById(R.id.checkboxView);
             mTitle = itemView.findViewById(R.id.textViewTitle);
             mDeadline = itemView.findViewById(R.id.textViewDeadline);
-            mChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            itemView.setBackgroundColor(Color.GRAY);
-                        } else {
-                            itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                        }
-                    }
-                }
-            );
-
-            itemView.setOnClickListener(new View.OnClickListener(){
-
-                @Override
-                public void onClick(View view) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
-                        }
-                    }
-                }
-            });
         }
-    }
-
-    public RecyclerViewAdapter(ArrayList<TaskDetails> todolist) {
-        mTodoList = todolist;
     }
 
     @NonNull
@@ -83,21 +62,53 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        TaskDetails currentItem = mTodoList.get(position);
+        ToDoItem currentToDo = toDoItemList.get(holder.getAdapterPosition());
+        holder.mTitle.setText(currentToDo.getTitle());
+        holder.mChecked.setChecked(currentToDo.isChecked());
 
-        holder.mChecked.setChecked(false);
-        holder.mTitle.setText(currentItem.getTitle());
-        Date deadline = currentItem.getDateDeadline();
+        Date deadline;
+        try{
+            deadline = inputDateFormat.parse(currentToDo.getDateDeadline());
+        } catch (Exception e) {
+            deadline = null;
+        }
         if (deadline != null) {
-            holder.mDeadline.setText("By " + inputDateFormat.format(currentItem.getDateDeadline()));
+            holder.mDeadline.setText("By " + inputDateFormat.format(deadline));
         } else {
             holder.mDeadline.setText("");
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("POSITION IS " + holder.getAdapterPosition());
+                mListener.editToDo(holder.getAdapterPosition());
+            }
+        });
+
+        holder.mChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        holder.itemView.setBackgroundColor(Color.GRAY);
+                    } else {
+                        holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    }
+                    mListener.checkToDo(toDoItemList.get(holder.getAdapterPosition()), isChecked);
+                }
+            });
     }
 
     @Override
     public int getItemCount() {
-        return mTodoList.size();
+        if(toDoItemList == null || toDoItemList.size() == 0)
+            return 0;
+        else
+            return toDoItemList.size();
+    }
+
+    public interface OnItemClickListener {
+        void editToDo(int position);
+        void checkToDo(ToDoItem todo, boolean isChecked);
     }
 }

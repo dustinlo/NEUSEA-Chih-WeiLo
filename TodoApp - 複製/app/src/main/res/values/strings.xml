@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Todo: CL</string>
+    <string name="deadline">Deadline</string>
+    <string name="date_to_remind">Date to Remind</string>
+    <string name="entry_added">Added/Updated Successfully!</string>
+    <string-array name="arrTagTodo">
+        <item>Select Tag</item>
+        <item>Red</item>
+        <item>White</item>
+        <item>Green</item>
+        <item>Blue</item>
+    </string-array>
+</resources>
