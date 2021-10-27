@@ -3,9 +3,7 @@ package edu.neu.khoury.madsea.chihweilo;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,34 +12,27 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import edu.neu.khoury.madsea.chihweilo.data.ToDoItem;
 import edu.neu.khoury.madsea.chihweilo.data.ToDoItemRepository;
 import edu.neu.khoury.madsea.chihweilo.databinding.ActivityToDoBinding;
-import edu.neu.khoury.madsea.chihweilo.viewmodel.ToDoViewModel;
 
-// adapted from Adrienne, https://github.com/ahope/cs5520_project/tree/main/todo-list
 public class ToDoActivity extends AppCompatActivity {
 
-    private ToDoViewModel mViewModel;
     private ActivityToDoBinding binding;
     private SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
-    private int position;
+    private boolean editMode;
     private LiveData<List<ToDoItem>> toDoItemList;
+    private static final String TAG = "";
     private ToDoItem todo;
-
     private Calendar myCalender;
     private EditText mTitle;
     private EditText mDetails;
@@ -61,29 +52,23 @@ public class ToDoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
-        repository = ToDoItemRepository.getSingleton(getApplication());
-
-//        binding = ActivityToDoBinding.inflate(getLayoutInflater());
-//        mViewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
-//        binding.setViewmodel(mViewModel);
+        repository = new ToDoItemRepository(this);
 
         getComponents();
         addComponentBehaviors();
-        Intent intent = getIntent();
-        position = intent.getIntExtra("index", -1);
-//        toDoItemList = mViewModel.getToDoList();
-        toDoItemList = repository.getAllTodos();
-//        System.out.println("EMPTY " + toDoItemList.isEmpty());
-        System.out.println("TEST TEST TEST " + position);
-        if (toDoItemList != null) {
-            if (position != -1) {
-//                todo = toDoItemList.getValue();
 
-                System.out.println("Reach Here 2?");
-                populateFieldsForUpdate();
-            }
+
+        if (getIntent().hasExtra("selected_todo")) {
+            todo = getIntent().getParcelableExtra("selected_todo");
+            editMode = true;
+            getSupportActionBar().setTitle("Edit ToDo");
+        } else {
+            todo = new ToDoItem();
+            editMode = false;
+            todo.setChecked(false);
+            getSupportActionBar().setTitle("Create ToDo");
         }
-
+        populateFieldsForUpdate();
 
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,10 +111,6 @@ public class ToDoActivity extends AppCompatActivity {
                                           Toast.LENGTH_SHORT).show();
             return;
         } else {
-            if (position == -1) {
-                todo = new ToDoItem();
-                todo.setChecked(false);
-            }
             todo.setTitle(title);
             if (details != null) {
                 todo.setDetails(details);
@@ -145,25 +126,18 @@ public class ToDoActivity extends AppCompatActivity {
                 todo.setDateRemind(inputDateFormat.format(dateRemind));
             }
 
-            if (position != -1) {
+            if (editMode == true) {
                 repository.updateToDo(todo);
-//                mViewModel.editToDo(todo);
             } else {
-//                System.out.println(todo.toString());
-//                mViewModel.insertToDo(todo);
-                repository.addToDo(todo);
+                repository.insertToDo(todo);
             }
         }
-//        Intent replyIntent = new Intent();
-//        setResult(RESULT_OK, replyIntent);
         finish();
     }
 
 
     private void populateFieldsForUpdate() {
-        getSupportActionBar().setTitle("Edit ToDo");
-
-        if (todo != null) {
+        if (editMode == true) {
             // title
             String title = todo.getTitle();
             if (!title.trim().isEmpty()) {

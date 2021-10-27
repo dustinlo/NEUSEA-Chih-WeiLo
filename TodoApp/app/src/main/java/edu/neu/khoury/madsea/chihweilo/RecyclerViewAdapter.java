@@ -2,6 +2,7 @@ package edu.neu.khoury.madsea.chihweilo;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,34 +24,20 @@ import edu.neu.khoury.madsea.chihweilo.data.ToDoItem;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
-    private Context context;
-    private OnItemClickListener mListener;
-    private SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
-    private List<ToDoItem> toDoItemList;
+    private static final String TAG = "RecyclerViewAdapter";
 
-    public RecyclerViewAdapter(Context context, OnItemClickListener listener) {
-        this.context = context;
+    private OnToDoListener mListener;
+    private SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    private List<ToDoItem> mToDos;
+
+
+    public RecyclerViewAdapter(List<ToDoItem> todos, OnToDoListener listener) {
+        this.mToDos = todos;
         this.mListener = listener;
     }
 
-    public void setToDoList(List<ToDoItem> todolist) {
-        this.toDoItemList = todolist;
-        notifyDataSetChanged();
-    }
 
 
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox mChecked;
-        public TextView mTitle;
-        public TextView mDeadline;
-
-        public RecyclerViewHolder(@NonNull View itemView, OnItemClickListener listener) {
-            super(itemView);
-            mChecked = itemView.findViewById(R.id.checkboxView);
-            mTitle = itemView.findViewById(R.id.textViewTitle);
-            mDeadline = itemView.findViewById(R.id.textViewDeadline);
-        }
-    }
 
     @NonNull
     @Override
@@ -62,26 +49,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        ToDoItem currentToDo = toDoItemList.get(holder.getAdapterPosition());
-        holder.mTitle.setText(currentToDo.getTitle());
-        holder.mChecked.setChecked(currentToDo.isChecked());
 
-        Date deadline;
-        try{
-            deadline = inputDateFormat.parse(currentToDo.getDateDeadline());
-        } catch (Exception e) {
-            deadline = null;
+        try {
+            ToDoItem currentToDo = mToDos.get(position);
+            holder.mTitle.setText(currentToDo.getTitle());
+            holder.mChecked.setChecked(currentToDo.isChecked());
+
+            Date deadline;
+            try{
+                deadline = inputDateFormat.parse(currentToDo.getDateDeadline());
+            } catch (Exception e) {
+                deadline = null;
+            }
+            if (deadline != null) {
+                holder.mDeadline.setText("By " + inputDateFormat.format(deadline));
+            } else {
+                holder.mDeadline.setText("");
+            }
+        } catch (NullPointerException e) {
+            Log.e(TAG, "onBindViewHolder: Null Pointer: " + e.getMessage() );
         }
-        if (deadline != null) {
-            holder.mDeadline.setText("By " + inputDateFormat.format(deadline));
-        } else {
-            holder.mDeadline.setText("");
-        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("POSITION IS " + holder.getAdapterPosition());
                 mListener.editToDo(holder.getAdapterPosition());
             }
         });
@@ -94,21 +86,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     } else {
                         holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     }
-                    mListener.checkToDo(toDoItemList.get(holder.getAdapterPosition()), isChecked);
+                    mListener.checkToDo(holder.getAdapterPosition(), isChecked);
                 }
             });
     }
 
     @Override
     public int getItemCount() {
-        if(toDoItemList == null || toDoItemList.size() == 0)
+        if(mToDos == null || mToDos.size() == 0)
             return 0;
         else
-            return toDoItemList.size();
+            return mToDos.size();
     }
 
-    public interface OnItemClickListener {
+    // inner class
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+        public CheckBox mChecked;
+        public TextView mTitle;
+        public TextView mDeadline;
+
+        public RecyclerViewHolder(@NonNull View itemView, OnToDoListener listener) {
+            super(itemView);
+            mChecked = itemView.findViewById(R.id.checkboxView);
+            mTitle = itemView.findViewById(R.id.textViewTitle);
+            mDeadline = itemView.findViewById(R.id.textViewDeadline);
+
+            itemView.setOnClickListener(this);
+            mChecked.setOnCheckedChangeListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.editToDo(getAdapterPosition());
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            mListener.checkToDo(getAdapterPosition(), isChecked);
+        }
+    }
+    // end of inner class
+
+    public interface OnToDoListener {
         void editToDo(int position);
-        void checkToDo(ToDoItem todo, boolean isChecked);
+        void checkToDo(int position, boolean isChecked);
     }
 }

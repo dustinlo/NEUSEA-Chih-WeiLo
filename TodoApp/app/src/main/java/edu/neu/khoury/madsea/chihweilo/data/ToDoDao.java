@@ -16,12 +16,15 @@ public interface ToDoDao {
     @Query("SELECT * FROM Todo")
     LiveData<List<ToDoItem>> getTodos();
 
-    @Insert(onConflict= OnConflictStrategy.IGNORE)
-    void insertTodo(ToDoItem todo);
+    @Query("SELECT * FROM Todo where uid = :uid")
+    LiveData<List<ToDoItem>> getTodoById(int uid);
+
+    @Insert
+    void insertTodo(ToDoItem... todo);
 
     @Update
-    void updateTodo(ToDoItem todo);
+    void updateTodo(ToDoItem... todo);
 
     @Delete
-    void deleteTodo(ToDoItem todo);
+    void deleteTodo(ToDoItem... todo);
 }

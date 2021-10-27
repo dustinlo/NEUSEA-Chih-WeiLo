@@ -16,16 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.neu.khoury.madsea.chihweilo.data.ToDoItem;
-import edu.neu.khoury.madsea.chihweilo.viewmodel.ToDoViewModel;
+import edu.neu.khoury.madsea.chihweilo.data.ToDoItemRepository;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnToDoListener {
 
+    // vars
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ToDoViewModel viewModel;
+//    private ToDoViewModel viewModel;
 
-    private ArrayList<ToDoItem> mTodoList;
+    private ToDoItemRepository mToDoRepository;
+    private List<ToDoItem> mTodoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,27 +36,37 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         getSupportActionBar().setTitle("My Tasks");
 
-        buildViewModel();
+        mToDoRepository = new ToDoItemRepository(this);
+        retrieveToDos();
+
         buildRecyclerView();
-//        viewModel.getAllToDoList();
     }
 
-    private void buildViewModel(){
-        viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
-
-        viewModel.getListOfToDos().observe(this, todos-> {
-            mAdapter.setToDoList(todos);
+    private void retrieveToDos(){
+        mToDoRepository.retrieveToDos().observe(this, new Observer<List<ToDoItem>>() {
+            @Override
+            public void onChanged(List<ToDoItem> toDoItems) {
+                if (mTodoList.size() >0){
+                    mTodoList.clear();
+                }
+                if (toDoItems!= null){
+                    mTodoList.addAll(toDoItems);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
         });
     }
+
     private void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new RecyclerViewAdapter(this, this);
+        mAdapter = new RecyclerViewAdapter(mTodoList, this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    // listener binding to fab
     public void createTask(View view) {
         Intent intent =new Intent(this, ToDoActivity.class);
         startActivity(intent);
@@ -75,16 +87,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     @Override
     public void editToDo(int position) {
-        Context context = mRecyclerView.getContext();
-        Intent intent = new Intent(context, ToDoActivity.class);
-        intent.putExtra("index", position);
+        Intent intent = new Intent(this, ToDoActivity.class);
+        intent.putExtra("selected_todo", mTodoList.get(position));
         startActivity(intent);
     }
 
     @Override
-    public void checkToDo(ToDoItem todo, boolean isChecked) {
+    public void checkToDo(int position, boolean isChecked) {
+        ToDoItem todo = mTodoList.get(position);
         todo.setChecked(isChecked);
-        viewModel.editToDo(todo);
+        mToDoRepository.updateToDo(todo);
     }
 
 

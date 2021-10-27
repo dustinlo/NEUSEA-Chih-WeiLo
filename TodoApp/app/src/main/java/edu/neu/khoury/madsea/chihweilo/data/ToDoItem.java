@@ -1,11 +1,14 @@
 package edu.neu.khoury.madsea.chihweilo.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Todo")
-public class ToDoItem {
+public class ToDoItem implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "uid")
@@ -31,6 +34,45 @@ public class ToDoItem {
 
     @ColumnInfo(name = "dateRemind")
     private String dateRemind;
+
+    public ToDoItem(){}
+
+    protected ToDoItem(Parcel in) {
+        uid = in.readInt();
+        isChecked = in.readByte() != 0;
+        title = in.readString();
+        details = in.readString();
+        dateDeadline = in.readString();
+        tag = in.readInt();
+        isReminded = in.readByte() != 0;
+        dateRemind = in.readString();
+    }
+
+    public static final Creator<ToDoItem> CREATOR = new Creator<ToDoItem>() {
+        @Override
+        public ToDoItem createFromParcel(Parcel in) {
+            return new ToDoItem(in);
+        }
+
+        @Override
+        public ToDoItem[] newArray(int size) {
+            return new ToDoItem[size];
+        }
+    };
+
+    @Override
+    public String toString() {
+        return "ToDoItem{" +
+                "uid=" + uid +
+                ", isChecked=" + isChecked +
+                ", title='" + title + '\'' +
+                ", details='" + details + '\'' +
+                ", dateDeadline='" + dateDeadline + '\'' +
+                ", tag=" + tag +
+                ", isReminded=" + isReminded +
+                ", dateRemind='" + dateRemind + '\'' +
+                '}';
+    }
 
     public boolean isChecked() {
         return isChecked;
@@ -96,4 +138,20 @@ public class ToDoItem {
         this.dateRemind = dateRemind;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uid);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeString(title);
+        dest.writeString(details);
+        dest.writeString(dateDeadline);
+        dest.writeInt(tag);
+        dest.writeByte((byte) (isReminded ? 1 : 0));
+        dest.writeString(dateRemind);
+    }
 }
