@@ -124,6 +124,8 @@ public class ToDoActivity extends AppCompatActivity {
             todo.setReminded(isRemind);
             if(isRemind == true && dateRemind != null) {
                 todo.setDateRemind(inputDateFormat.format(dateRemind));
+            } else {
+                todo.setDateRemind("");
             }
 
             if (editMode == true) {
