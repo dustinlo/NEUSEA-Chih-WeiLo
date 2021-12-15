@@ -10,8 +10,11 @@ import android.view.View;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,14 +84,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class);
-        if (intent.hasExtra("todo")) {
-            intent.removeExtra("todo");
-        }
-        intent.putExtra("todo", todo.getTitle());
-        int id = ThreadLocalRandom.current().nextInt(1, 100000 + 1);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, 0);
+        int id = todo.getUid();
+
+        intent.putExtra("todo_title", todo.getTitle());
+        intent.putExtra("todo_id", id);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         Calendar cal = Calendar.getInstance();
-        cal.setTime(inputDateFormat.parse(todo.getDateRemind()));
+        Calendar toSet = Calendar.getInstance();
+        toSet.setTime(inputDateFormat.parse(todo.getDateRemind()));
+        if (toSet.before(cal)) {
+            cal.add(Calendar.DATE, 1);
+        } else {
+            cal = toSet;
+        }
+        alarmManager.cancel(pendingIntent);
         alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
     }
 
@@ -97,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new RecyclerViewAdapter(mTodoList, this);
+        new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(mRecyclerView);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -120,4 +132,37 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         todo.setChecked(isChecked);
         mToDoRepository.updateToDo(todo);
     }
+
+    private void deleteToDo(ToDoItem todo) {
+        mTodoList.remove(todo);
+        mAdapter.notifyDataSetChanged();
+
+        mToDoRepository.deleteToDo(todo);
+    }
+
+    private ItemTouchHelper.SimpleCallback itemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            ToDoItem todoSelected = mTodoList.get(viewHolder.getAdapterPosition());
+            switch (direction) {
+                case ItemTouchHelper.RIGHT:
+                    deleteToDo(todoSelected);
+                    break;
+                case ItemTouchHelper.LEFT:
+                    String mimeType = "text/plain";
+                    ShareCompat.IntentBuilder
+                    .from(MainActivity.this)
+                    .setType(mimeType)
+                    .setText(todoSelected.toString())
+                    .startChooser();
+                    mAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
 }

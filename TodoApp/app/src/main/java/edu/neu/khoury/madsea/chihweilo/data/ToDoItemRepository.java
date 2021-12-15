@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import edu.neu.khoury.madsea.chihweilo.async.DeleteAsyncTask;
 import edu.neu.khoury.madsea.chihweilo.async.InsertAsyncTask;
 import edu.neu.khoury.madsea.chihweilo.async.UpdateAsyncTask;
 
@@ -32,50 +33,6 @@ public class ToDoItemRepository {
     }
 
     public void deleteToDo(ToDoItem todo){
-
+        new DeleteAsyncTask(mToDoDatabase.getTodoDao()).execute(todo);
     }
-
-//    public static ToDoItemRepository getSingleton(Application application){
-//        if(singleton == null){
-//            singleton = new ToDoItemRepository(application);
-//        }
-//        return singleton;
-//    }
-//
-//    public List<ToDoItem> asList() {
-//        return mToDoDataSource.getTodos().getValue();
-//    }
-//
-//
-//    public LiveData<List<ToDoItem>> getAllTodos() {
-//        return mToDoDataSource.getTodos();
-//    }
-//
-//
-//
-//    public void addToDo(ToDoItem newToDo) {
-//        mToDoDataSource.insert(newToDo);
-//    }
-//    public void updateToDo(ToDoItem todo) {
-//        mToDoDataSource.update(todo);
-//    }
-
-//    @NonNull
-//    @Override
-//    public Iterator<ToDoItem> iterator() {
-//        return mToDoDataSource.getTodos().getValue().iterator();
-//    }
-//
-//    @Override
-//    public void forEach(@NonNull Consumer<? super ToDoItem> action) {
-//        mToDoDataSource.getTodos().getValue().forEach(action);
-//    }
-//
-//    @NonNull
-//    @Override
-//    public Spliterator<ToDoItem> spliterator() {
-//        return mToDoDataSource.getTodos().getValue().spliterator();
-//    }
-
-
 }

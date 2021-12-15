@@ -62,16 +62,14 @@ public class ToDoItem implements Parcelable {
 
     @Override
     public String toString() {
-        return "ToDoItem{" +
-                "uid=" + uid +
-                ", isChecked=" + isChecked +
-                ", title='" + title + '\'' +
-                ", details='" + details + '\'' +
-                ", dateDeadline='" + dateDeadline + '\'' +
-                ", tag=" + tag +
-                ", isReminded=" + isReminded +
-                ", dateRemind='" + dateRemind + '\'' +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Todo Title: " + title + "\n");
+        sb.append("Todo Details:" + (details == null ||details.trim().isEmpty()?"No Details":details) + "\n");
+        sb.append("Todo Deadline:" + (dateDeadline == null || dateDeadline.trim().isEmpty()?"No Deadline":dateDeadline) + "\n");
+        if (isReminded && dateDeadline != null && !dateRemind.trim().isEmpty()) {
+            sb.append("Todo remind date:" + (dateRemind.trim().isEmpty()?"No Deadline":dateRemind));
+        }
+        return sb.toString();
     }
 
     public boolean isChecked() {

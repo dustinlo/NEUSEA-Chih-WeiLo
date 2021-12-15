@@ -118,7 +118,6 @@ public class ToDoActivity extends AppCompatActivity {
             todo.setTag(tagIndex);
 
             if (deadline != null) {
-                System.out.println(inputDateFormat.format(deadline));
                 todo.setDateDeadline(inputDateFormat.format(deadline));
             }
             todo.setReminded(isRemind);

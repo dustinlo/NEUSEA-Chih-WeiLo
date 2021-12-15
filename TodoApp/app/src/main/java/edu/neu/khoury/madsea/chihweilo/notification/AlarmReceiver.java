@@ -14,10 +14,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        String title = intent.getStringExtra("todo");
-        System.out.println("TESTTTTTTTT " + title);
+        String title = intent.getStringExtra("todo_title");
+        int id = intent.getIntExtra("todo_id", -1);
+
         NotificationCompat.Builder nb = notificationHelper.getNotification(title);
-        int id = ThreadLocalRandom.current().nextInt(1, 100000 + 1);
         notificationHelper.getNotificationManager().notify(id, nb.build());
     }
 }

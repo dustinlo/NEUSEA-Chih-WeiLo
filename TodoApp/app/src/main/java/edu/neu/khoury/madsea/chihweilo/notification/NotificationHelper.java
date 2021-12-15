@@ -34,7 +34,6 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public NotificationCompat.Builder getNotification(String title) {
-        System.out.println("TESTTTTTTTT2 " + title);
         return new NotificationCompat.Builder(getApplicationContext(), CHANNELID)
                 .setContentTitle(title)
                 .setContentText("Reminder: task to complete -> " + title)
